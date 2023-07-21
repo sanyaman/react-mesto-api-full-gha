@@ -1,0 +1,16 @@
+.header__user-info {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding-top: 6px;
+  }
+  
+  @media (min-width: 320px) and (max-width: 600px) {
+    .header__user-info {
+      gap: 10px;
+      flex-direction: column;
+      margin-right: 30px;
+      padding: 0;
+    }
+  }
+  

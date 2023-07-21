@@ -1,0 +1,13 @@
+.auth__path-link {
+    margin: 0;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #FFFFFF;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.auth__path-link:hover {
+    opacity: 0.6;
+}

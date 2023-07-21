@@ -1,0 +1,37 @@
+{
+  "name": "express-mesto-gha",
+  "version": "1.0.0",
+  "description": "Местограмм",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "lint": "npx eslint .",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "Sanyaman",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "nodemon": "^2.0.22"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "celebrate": "^15.0.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.1",
+    "express-winston": "^4.2.0",
+    "hash": "^0.2.1",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.3.1",
+    "node-modules": "^1.0.1",
+    "validator": "^13.9.0",
+    "winston": "^3.10.0",
+    "winston-express": "^0.1.1"
+  }
+}
