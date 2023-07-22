@@ -12,7 +12,10 @@ const { MESTODB = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const NOT_FOUND_ERROR = require('./errors/404');
 const errorServer = require('./middlewares/errorServer');
+<<<<<<< HEAD
 const cors = require('./middlewares/cors');
+=======
+>>>>>>> 13ddaf6e14108e2752d1faef80a8d8db8d59232f
 
 const app = express();
 app.use(express.json());
@@ -31,6 +34,7 @@ const limiter = requestLimit({
 app.use(cookieParser());
 app.use(limiter);
 app.use(requestLogger);
+<<<<<<< HEAD
 app.use(cors);
 
 app.get('/crash-test', () => {
@@ -39,6 +43,8 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
+=======
+>>>>>>> 13ddaf6e14108e2752d1faef80a8d8db8d59232f
 app.post(
   '/signin',
   celebrate({
@@ -72,8 +78,14 @@ app.use('/cards', require('./routes/cards'));
 app.use('/*', () => {
   throw new NOT_FOUND_ERROR('Запрашиваемый пользователь не найден');
 });
+<<<<<<< HEAD
 app.use(errorLogger);
 
+=======
+app.use(errorLogger); // подключаем логгер ошибок
+
+app.use(errors()); // обработчик ошибок celebrate
+>>>>>>> 13ddaf6e14108e2752d1faef80a8d8db8d59232f
 app.use(errors());
 app.use(errorServer);
 // если всё ок , то бозон Хиггса получен

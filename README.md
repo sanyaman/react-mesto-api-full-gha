@@ -9,8 +9,8 @@
 
 ## Ссылки на проект
 
-IP-адрес x.x.x.x
+IP 51.250.8.45
 
-Frontend https://...
+Frontend https://domainSanyaman.students.nomoredomains.xyz
 
-Backend https://...
+Backend https://api.domainSanyaman.nomoredomains.xyz
