@@ -1,0 +1,12 @@
+.auth__path {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px auto 80px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .auth__path {
+        margin: 20px auto 40px;
+    }
+}
