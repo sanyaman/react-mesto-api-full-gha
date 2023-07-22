@@ -18,6 +18,7 @@ app.use(express.json());
 mongoose.connect(MESTODB, {
   family: 4,
 });
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const limiter = requestLimit({
   windowMs: 15 * 60 * 1000,
@@ -28,7 +29,7 @@ const limiter = requestLimit({
 
 app.use(cookieParser());
 app.use(limiter);
-
+app.use(requestLogger);
 app.post(
   '/signin',
   celebrate({
@@ -62,7 +63,9 @@ app.use('/cards', require('./routes/cards'));
 app.use('/*', () => {
   throw new NOT_FOUND_ERROR('Запрашиваемый пользователь не найден');
 });
+app.use(errorLogger); // подключаем логгер ошибок
 
+app.use(errors()); // обработчик ошибок celebrate
 app.use(errors());
 app.use(errorServer);
 // если всё ок , то бозон Хиггса получен
