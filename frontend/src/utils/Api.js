@@ -2,6 +2,7 @@ class Api {
     constructor(options) {
         this._baseUrl = options.baseUrl;
         this._headers = options.headers;
+        this._credentials = options.credentials;
     }
 
     _checkResponse(response) {
@@ -17,6 +18,7 @@ class Api {
 
     getInitialCards() {
         return this._request(`${this._baseUrl}cards`, {
+
             headers:
                 { authorization: this._headers.authorization }
         })
@@ -33,6 +35,7 @@ class Api {
         return this._request(`${this._baseUrl}users/me`, {
             method: 'PATCH',
             headers: this._headers,
+            //credentials: this._credentials,
             body: JSON.stringify({
                 name: userData.name,
                 about: userData.about,
@@ -80,9 +83,10 @@ class Api {
     }
 }
 export const api = new Api({
-    baseUrl: "https://mesto.nomoreparties.co/v1/cohort-64/",
+    baseUrl: "https://mesto.nomoreparties.co/v1/cohort-64/", //api.domainSanyaman.nomoredomains.xyz
     headers: {
         authorization: "8bd00c41-1f48-4e16-b589-00a5dc2c8828",
         "Content-Type": "application/json"
-    }
+      },
+      credentials: 'include',
 });

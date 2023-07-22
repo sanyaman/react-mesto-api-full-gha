@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'https://auth.nomoreparties.co'; //api.domainSanyaman.nomoredomains.xyz
 
 function getServerReply(res) {
     if (res.ok) {
@@ -14,6 +14,7 @@ export const register = (email, password) => {
             Accept: "application/json",
             "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
             email: email,
             password: password,
