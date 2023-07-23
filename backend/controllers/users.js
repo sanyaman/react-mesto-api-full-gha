@@ -49,11 +49,11 @@ module.exports.getCurrentUser = (req, res, next) => {
   user
     .findById(userId)
     // eslint-disable-next-line no-shadow
-    .then((user) => {
-      if (!user) {
+    .then((foundUser) => {
+      if (!foundUser) {
         throw new NOT_FOUND_ERROR('Пользователь по указанному _id не найден');
       }
-      res.send({ data: user });
+      res.send({ foundUser });
     })
     .catch(next);
 };
@@ -82,13 +82,13 @@ module.exports.setUserInfo = (req, res, next) => {
         runValidators: true,
       },
     )
-    .then((users) => {
-      if (!users) {
+    .then((userInfo) => {
+      if (!userInfo) {
         throw new NOT_FOUND_ERROR(
           'Не удалось обновить информацию пользователя по указанному id',
         );
       }
-      res.send({ data: users });
+      res.send({ userInfo });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -115,11 +115,11 @@ module.exports.setAvatar = (req, res, next) => {
       },
     )
     // eslint-disable-next-line no-shadow
-    .then((user) => {
-      if (!user) {
+    .then((foundUser) => {
+      if (!foundUser) {
         throw new NOT_FOUND_ERROR('Не удалось обновить данные аватара');
       }
-      res.send({ avatar: user.avatar });
+      res.send({ foundUser });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -140,17 +140,17 @@ module.exports.login = (req, res, next) => {
     .findOne({ email })
     .select('+password')
     // eslint-disable-next-line no-shadow
-    .then((user) => {
-      if (!user) {
+    .then((foundUser) => {
+      if (!foundUser) {
         throw new UNAUTHORIZED('Неправильно указан логин и/или пароль');
       }
       return bcrypt
-        .compare(password, user.password)
+        .compare(password, foundUser.password)
         .then((match) => {
           if (!match) {
             throw new UNAUTHORIZED('Неправильно указан логин и/или пароль');
           }
-          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'develop' ? SECRET_KEY : 'PUTIN', {
+          const token = jwt.sign({ _id: foundUser._id }, NODE_ENV === 'develop' ? SECRET_KEY : 'PUTIN', {
             expiresIn: '7d',
           });
           res.cookie('jwt', token, {
@@ -158,7 +158,7 @@ module.exports.login = (req, res, next) => {
             httpOnly: true,
           });
           res.send({
-            data: `${user.email} Вход выполнен , начинается телепортация в мета вселенную`,
+            check: `${foundUser.email} Вход выполнен , начинается телепортация в мета вселенную`,
           });
         });
     })

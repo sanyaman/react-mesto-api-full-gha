@@ -88,5 +88,4 @@ export const api = new Api({
         authorization: "8bd00c41-1f48-4e16-b589-00a5dc2c8828",
         "Content-Type": "application/json"
       },
-      credentials: 'include',
 });

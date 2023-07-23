@@ -1,17 +1,26 @@
 # Logs
 logs
+
 *.log
+*.log
+
 npm-debug.log*
 
 # Dependency directory
 node_modules
 
+build/
 # Optional npm cache directory
 .npm
 
+.env
 # Optional REPL history
 .DS_Store
+
 .idea
+
 .vscode
-.env
-build/
+
+*.eslintrc.js
+
+*.env.example

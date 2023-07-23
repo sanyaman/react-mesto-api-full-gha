@@ -12,6 +12,7 @@ const { MESTODB = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 const NOT_FOUND_ERROR = require('./errors/404');
 const errorServer = require('./middlewares/errorServer');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('./middlewares/cors');
 
 const app = express();
@@ -19,7 +20,12 @@ app.use(express.json());
 mongoose.connect(MESTODB, {
   family: 4,
 });
-const { requestLogger, errorLogger } = require('./middlewares/logger');
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Ой');
+  }, 0);
+});
 
 const limiter = requestLimit({
   windowMs: 15 * 60 * 1000,
@@ -32,12 +38,6 @@ app.use(cookieParser());
 app.use(limiter);
 app.use(requestLogger);
 app.use(cors);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер 500');
-  }, 0);
-});
 
 app.post(
   '/signin',
@@ -73,15 +73,9 @@ app.use('/*', () => {
   throw new NOT_FOUND_ERROR('Запрашиваемый пользователь не найден');
 });
 app.use(errorLogger);
-
-app.use(errorLogger); // подключаем логгер ошибок
-
-app.use(errors()); // обработчик ошибок celebrate
-
 app.use(errors());
 app.use(errorServer);
-// если всё ок , то бозон Хиггса получен
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log(`Запуск адронного коллайдера : ${PORT}`);
+  console.log(`Запуск адронного коллайдера !!!!: ${PORT}`);
 });

@@ -4,8 +4,8 @@ const allowedCors = [
   'http://127.0.0.1:3000',
   'https://domainSanyaman.students.nomoredomains.xyz',
   'https://127.0.0.1:3000',
-  'http://domainSanyaman.students.nomoredomains.xyz',
-  'https://domainSanyaman.students.nomoredomains.xyz',
+  'http://api.domainSanyaman.nomoredomains.xyz',
+  'https://api.domainSanyaman.nomoredomains.xyz',
 ];
 
 // eslint-disable-next-line consistent-return
@@ -30,4 +30,3 @@ module.exports = (req, res, next) => {
   }
   next();
 };
-
