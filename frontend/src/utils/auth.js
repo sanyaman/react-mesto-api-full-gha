@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://auth.nomoreparties.co'; //api.domainSanyaman.nomoredomains.xyz
+export const BASE_URL = 'https://api.domainSanyaman.nomoredomains.xyz'; //api.domainSanyaman.nomoredomains.xyz
 
 function getServerReply(res) {
     if (res.ok) {
