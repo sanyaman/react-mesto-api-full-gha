@@ -83,9 +83,9 @@ class Api {
     }
 }
 export const api = new Api({
-    baseUrl: "https://api.domainSanyaman.nomoredomains.xyz", //api.domainSanyaman.nomoredomains.xyz
+    baseUrl: "https://mesto.nomoreparties.co/v1/cohort-64/", //api.domainSanyaman.nomoredomains.xyz
     headers: {
-       // authorization: "8bd00c41-1f48-4e16-b589-00a5dc2c8828",
+        authorization: "8bd00c41-1f48-4e16-b589-00a5dc2c8828",
         "Content-Type": "application/json"
       },
 });
