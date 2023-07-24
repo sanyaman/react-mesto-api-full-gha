@@ -11,6 +11,6 @@
 
 IP 51.250.8.45
 
-Frontend http://domainSanyaman.students.nomoredomains.xyz
+Frontend https://domainSanyaman.students.nomoredomains.xyz
 
-Backend http://api.domainSanyaman.nomoredomains.xyz
+Backend https://api.domainSanyaman.nomoredomains.xyz
