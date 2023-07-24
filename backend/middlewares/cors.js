@@ -1,10 +1,10 @@
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 const allowedCors = [
-  // 'http://domainSanyaman.students.nomoredomains.xyz',
-  // 'http://127.0.0.1:3000',
+  'http://domainSanyaman.students.nomoredomains.xyz',
+  'http://127.0.0.1:3000',
   'https://domainSanyaman.students.nomoredomains.xyz',
   'https://127.0.0.1:3000',
-  // 'http://api.domainSanyaman.nomoredomains.xyz',
+  'http://api.domainSanyaman.nomoredomains.xyz',
   'https://api.domainSanyaman.nomoredomains.xyz',
 ];
 
