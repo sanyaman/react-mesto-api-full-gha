@@ -46,7 +46,7 @@ function App() {
     }
   }, [isLoggedIn]);
 
-  
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
