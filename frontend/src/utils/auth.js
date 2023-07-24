@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://api.domainsanyaman.nomoredomains.xyz/'; //api.domainSanyaman.nomoredomains.xyz
+export const BASE_URL = 'http://api.domainsanyaman.nomoredomains.xyz'; //api.domainSanyaman.nomoredomains.xyz
 
 function getServerReply(res) {
     if (res.ok) {
@@ -11,10 +11,10 @@ export const register = (email, password) => {
     return fetch(`${BASE_URL}/signup`, {
         method: "POST",
         headers: {
-            Accept: "application/json",
+           // Accept: "application/json",
             "Content-Type": "application/json",
         },
-
+        credentials: 'include',
         body: JSON.stringify({
             email: email,
             password: password,
@@ -29,6 +29,7 @@ export const login = (email, password) => {
         headers: {
             "Content-Type": "application/json",
         },
+        credentials: 'include',
         body: JSON.stringify({
             email: email,
             password: password,
@@ -48,8 +49,9 @@ export const checkToken = (token) => {
         method: "GET",
         headers: {
             'Content-Type': "application/json",
-            'Authorization': `Bearer ${token}`,
+            //'Authorization': `Bearer ${token}`,
         },
+        credentials: 'include',
     })
         .then(getServerReply)
 };

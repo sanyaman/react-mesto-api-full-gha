@@ -28,7 +28,7 @@ function App() {
   const [isSelectedCard, setIsSelectedCard] = useState({});
   const [isInfoToolTipPopupOpen, setIsInfoToolTipPopupOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("@email"); //
   const [isSuccess, setIsSuccess] = useState(false);
   const [isCurrentUser, setCurrentUser] = useState({
     name: "Жак",
