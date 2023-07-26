@@ -27,7 +27,7 @@ export const login = (email, password) => {
     return fetch(`${BASE_URL}/sign-in`, {
         method: "POST",
         headers: {
-          Accept: "application/json", //
+        //  Accept: "application/json", //
             "Content-Type": "application/json",
         },
         credentials: 'include',
@@ -45,7 +45,7 @@ export const login = (email, password) => {
         //})
 };
 
-export const checkToken = (token) => {
+export const checkToken = () => {
     return fetch(`${BASE_URL}/users/me`, {
         method: "GET",
         headers: {

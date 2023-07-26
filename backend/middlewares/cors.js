@@ -8,7 +8,7 @@ const allowedCors = [
   'https://api.domainSanyaman.nomoredomains.xyz',
 ];
 
-// eslint-disable-next-line consistent-return
+
 module.exports = (req, res, next) => {
   const { origin } = req.headers;
   const { method } = req;
