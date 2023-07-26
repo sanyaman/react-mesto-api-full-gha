@@ -1,8 +1,8 @@
 class Api {
     constructor(options) {
         this._baseUrl = options.baseUrl;
-        this._headers = options.headers;
-        this._credentials = options.credentials;
+        //this._headers = options.headers;
+        //this._credentials = options.credentials;
     }
 
     _checkResponse(response) {
@@ -85,7 +85,7 @@ class Api {
     }
 }
 export const api = new Api({
-    baseUrl: "http://api.domainsanyaman.nomoredomains.xyz/", //api.domainSanyaman.nomoredomains.xyz
+    baseUrl: "https://api.domainsanyaman.nomoredomains.xyz/", //api.domainSanyaman.nomoredomains.xyz
     headers: {
         //authorization: "8bd00c41-1f48-4e16-token-00a5dc2c8828",
         "Content-Type": "application/json"
