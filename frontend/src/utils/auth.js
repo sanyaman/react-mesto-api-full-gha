@@ -11,7 +11,7 @@ export const register = (email, password) => {
     return fetch(`${BASE_URL}/sign-up`, {
         method: "POST",
         headers: {
-            Accept: "application/json", //
+            //Accept: "application/json", //
             "Content-Type": "application/json",
         },
         credentials: 'include',
@@ -37,12 +37,12 @@ export const login = (email, password) => {
         }),
     })
         .then(getServerReply)
-        .then((data) => {
-            if (data.token) {
-                localStorage.setItem("token", data.token);
-                return data;
-            }
-        })
+        // .then((data) => {
+        //     if (data.token) {
+        //         localStorage.setItem("token", data.token);
+        //         return data;
+        //     }
+        //})
 };
 
 export const checkToken = (token) => {
