@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { api } from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
-import * as auth from "../utils/auth";
+//import * as auth from "../utils/auth";
 import ProtectedRoute from "./ProtectedRoute";
 import Header from "./Header";
 import Main from "./Main";
@@ -15,6 +15,7 @@ import ImagePopup from "./ImagePopup";
 import Register from "./Register";
 import Login from "./Login";
 import InfoToolTip from "./InfoTooltip";
+import { authorize, register, checkToken, logout } from "../utils/auth";
 
 function App() {
   const navigate = useNavigate();
@@ -28,14 +29,14 @@ function App() {
   const [isSelectedCard, setIsSelectedCard] = useState({});
   const [isInfoToolTipPopupOpen, setIsInfoToolTipPopupOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [email, setEmail] = useState("@email"); //
+  const [email, setEmail] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isCurrentUser, setCurrentUser] = useState({
     name: "Жак",
     about: "Доширак",
   });
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (isLoggedIn) {
       Promise.all([api.getUserData(), api.getInitialCards()])
         .then(([user, cards]) => {
@@ -67,8 +68,32 @@ function App() {
         });
     }
   }, [navigate]);
+*/
 
-
+  function handleCheckToken() {
+    checkToken()
+      .then((res) => {
+        if (res._id) {
+          setEmail(res.email);
+          Promise.all([api.getUserData(), api.getInitialCards()])
+            .then(([{ name, about, avatar, _id }, cards]) => {
+              //then(([user, cards])
+              setCurrentUser({ name, about, avatar, _id }); //setCurrentUser(user);
+              setCards(cards);
+              setIsLoggedIn(true);
+              navigate("/", { replace: true });
+            })
+            .catch((err) => console.log("Ошибка:", err));
+        }
+      })
+      .catch((err) => {
+        if (err.status === 400) {
+          console.log("400 — Токен не передан");
+        } else if (err.status === 401) {
+          console.log("401 — Переданный токен некорректен");
+        }
+      });
+  }
 
   function handleEditAvatarClick() {
     setIsAvatarPopupOpen(true);
@@ -87,8 +112,8 @@ function App() {
     api
       .toggleLike(isLiked, card._id)
       .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
+        setCards(
+          (state) => state.map((c) => (c._id === newCard._id ? newCard : c)) // c.id === card._id
         );
       })
       .catch((err) => console.log("Ошибка:", err));
@@ -116,8 +141,8 @@ function App() {
     setIsLoading(true);
     api
       .setUserData(user)
-      .then((newUser) => {
-        setCurrentUser(newUser);
+      .then(({ name, about, avatar, _id }) => {
+        setCurrentUser({ name, about, avatar, _id });
         setIsEditProfilePopupOpen(false);
       })
       .catch((err) => console.log("Ошибка:", err))
@@ -148,9 +173,8 @@ function App() {
       .finally(() => setIsLoading(false));
   }
 
-  function handleRegisterSubmit(email, password) {
-    auth
-      .register(email, password)
+  function handleRegisterSubmit(data) {
+    register(data.email, data.password)
       .then(() => {
         setIsInfoToolTipPopupOpen(true);
         setIsSuccess(true);
@@ -165,15 +189,18 @@ function App() {
       });
   }
 
-  function handleLoginSubmit(email, password) {
-    auth
-      .login(email, password)
-      .then((res) => {
-        localStorage.setItem("token", res.token);
+  function handleLoginSubmit(data) {
+    authorize(data.email, data.password)
+    .then((data) => {
+      if (data) {
+        handleCheckToken();
         setIsLoggedIn(true);
-        setEmail(email);
+        //setEmail(email);
         navigate("/");
-      })
+      } else {
+        setIsInfoToolTipPopupOpen(false)
+      }
+    })
       .catch((err) => {
         if (err.status === 400) {
           console.log("400 - Не передано одно из полей");
@@ -185,10 +212,29 @@ function App() {
       });
   }
 
+  // function handleSignOut() {
+  //   logout()
+  //     .then((answ) => {
+  //       if (answ) {
+  //         setIsLoggedIn(false);
+  //         navigate("/sign-in");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
   function handleSignOut() {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate("/sign-in");
+    logout()
+      .then((answ) => {
+        if (answ.bye) {
+          sessionStorage.removeItem('loggedin');
+          setIsLoggedIn(false);
+          setCurrentUser({});
+          navigate("/sign-in")
+        }
+      })
+      .catch(err => { console.log(err) })
   }
 
   function closeAllPopups() {
@@ -199,6 +245,10 @@ function App() {
     setIsInfoToolTipPopupOpen(false);
     setIsSelectedCard({});
   }
+
+  useEffect(() => {
+    /*  handleCheckToken() */
+  }, [navigate]);
 
   return (
     <CurrentUserContext.Provider value={isCurrentUser}>

@@ -1,58 +1,61 @@
-export const BASE_URL = 'https://api.domainsanyaman.nomoredomains.xyz'; //api.domainSanyaman.nomoredomains.xyz
+export const BASE_URL = 'http://api.domainsanyaman.nomoredomains.xyz';
 
-function getServerReply(res) {
-    if (res.ok) {
-        return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-}
 
-export const register = (email, password) => {
-    return fetch(`${BASE_URL}/sign-up`, {
-        method: "POST",
-        headers: {
-            //Accept: "application/json", //
-            "Content-Type": "application/json",
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-            email: email,
-            password: password,
-        }),
+
+export const register = (password, email) => {
+  return fetch(`${BASE_URL}/signup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify({ password, email })
+  })
+    .then((response) => {
+      return response.json();
     })
-        .then(getServerReply)
-}
-
-export const login = (email, password) => {
-    return fetch(`${BASE_URL}/sign-in`, {
-        method: "POST",
-        headers: {
-        //  Accept: "application/json", //
-            "Content-Type": "application/json",
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-            email: email,
-            password: password,
-        }),
+    .then((res) => {
+      if ('data' in res) {
+        return res;
+      }
     })
-        .then(getServerReply)
-        // .then((data) => {
-        //     if (data.token) {
-        //         localStorage.setItem("token", data.token);
-        //         return data;
-        //     }
-        //})
+    .catch((err) => console.log(err));
+};
+
+export const authorize = (email, password) => {
+  return fetch(`${BASE_URL}/signin`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify({ email, password })
+  })
+    .then((response => response.json()))
+    .catch(err => console.log(err))
 };
 
 export const checkToken = () => {
-    return fetch(`${BASE_URL}/users/me`, {
-        method: "GET",
-        headers: {
-            'Content-Type': "application/json",
-            //'Authorization': `Bearer ${token}`,
-        },
-        credentials: 'include',
-    })
-        .then(getServerReply)
-};
+  return fetch(`${BASE_URL}/users/me`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+    .then(res => res.json())
+    .catch((err) => console.log('Ошибка:', err))
+}
+
+export const logout = () => {
+  return fetch(`${BASE_URL}/logout`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+    .then(res => res.json())
+    .catch((err) => console.log('Ошибка:', err))
+}
+

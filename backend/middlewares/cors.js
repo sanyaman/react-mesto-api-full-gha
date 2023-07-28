@@ -1,14 +1,14 @@
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
 const allowedCors = [
-  'http://domainSanyaman.students.nomoredomains.xyz',
-  'http://127.0.0.1:3000',
-  'https://domainSanyaman.students.nomoredomains.xyz',
-  'https://127.0.0.1:3000',
-  'http://api.domainSanyaman.nomoredomains.xyz',
-  'https://api.domainSanyaman.nomoredomains.xyz',
+  'http://domainsanyaman.students.nomoredomains.xyz/',
+  'https://domainsanyaman.students.nomoredomains.xyz/',
+  'http://localhost:3000',
+  'https://localhost:3000',
+  'http://api.domainsanyaman.nomoredomains.xyz/',
+  'https://api.domainsanyaman.nomoredomains.xyz/',
 ];
 
-
+// eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
   const { origin } = req.headers;
   const { method } = req;

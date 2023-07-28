@@ -9,9 +9,11 @@ const BAD_REQUEST = require('../errors/400');
 const { SECRET_KEY, NODE_ENV } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
-  user
-    .find({})
+  user.find({})
     .then((users) => {
+      if (!users) {
+        throw new NOT_FOUND_ERROR('Пользователи не найдены');
+      }
       res.send({ data: users });
     })
     .catch(next);
@@ -29,19 +31,26 @@ module.exports.createUser = (req, res, next) => {
     .then(() => res.status(201).send({
       name, about, avatar, email,
     }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return next(
-          new BAD_REQUEST(
-            'Переданы некорректные данные при создании пользователя',
-          ),
-        );
-      } if (err.code === 11000) {
-        return next(
-          new CONFLICT_ERROR(`Пользователь с почтой'${email}' уже существует.`),
-        );
-      } return next(err);
-    });
+    .catch(() => { throw new CONFLICT_ERROR('Введенная почта уже используется'); })
+    .then((newUser) => {
+      // eslint-disable-next-line no-shadow
+      const { password, ...result } = newUser.toObject();
+      res.send({ data: result });
+    })
+    .catch(next);
+  // .catch((err) => {
+  //   if (err.name === 'ValidationError') {
+  //     return next(
+  //       new BAD_REQUEST(
+  //         'Переданы некорректные данные при создании пользователя',
+  //       ),
+  //     );
+  //   } if (err.code === 11000) {
+  //     return next(
+  //       new CONFLICT_ERROR(`Пользователь с почтой'${email}' уже существует.`),
+  //     );
+  //   } return next(err);
+  // });
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
@@ -53,7 +62,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (!foundUser) {
         throw new NOT_FOUND_ERROR('Пользователь по указанному _id не найден');
       }
-      res.send({ foundUser });
+      res.send(foundUser);
     })
     .catch(next);
 };
@@ -88,7 +97,7 @@ module.exports.setUserInfo = (req, res, next) => {
           'Не удалось обновить информацию пользователя по указанному id',
         );
       }
-      res.send({ userInfo });
+      res.send(userInfo);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -119,7 +128,7 @@ module.exports.setAvatar = (req, res, next) => {
       if (!foundUser) {
         throw new NOT_FOUND_ERROR('Не удалось обновить данные аватара');
       }
-      res.send({ foundUser });
+      res.send(foundUser);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -132,6 +141,16 @@ module.exports.setAvatar = (req, res, next) => {
       }
       return next(err);
     });
+};
+module.exports.logout = (req, res) => {
+  try {
+    res.cleaeCookie('jwt', { httpOnly: true });
+    res.cookie('jwt', '0', {
+      e: Date(0),
+      httpOnly: true,
+    });
+    res.send('Вали!');
+  } catch (err) { throw new Error(err); }
 };
 
 module.exports.login = (req, res, next) => {
@@ -150,17 +169,21 @@ module.exports.login = (req, res, next) => {
           if (!match) {
             throw new UNAUTHORIZED('Неправильно указан логин и/или пароль');
           }
-          const token = jwt.sign({ _id: foundUser._id }, NODE_ENV === 'develop' ? SECRET_KEY : 'PUTIN', {
-            expiresIn: '7d',
-          });
+          const token = jwt.sign(
+            { _id: foundUser._id },
+            NODE_ENV === 'production'
+              ? SECRET_KEY : 'PUTIN',
+
+            {
+              expiresIn: '7d',
+            },
+          );
           res.cookie('jwt', token, {
             maxAge: 3600000,
             httpOnly: true,
           });
-          res.send({
-            check: `${foundUser.email} Вход выполнен , начинается телепортация в мета вселенную`,
-          });
-        });
+          res.send({ email: foundUser.email });
+        }).catch(() => { throw new UNAUTHORIZED('Ошибка в создании токена'); });
     })
     .catch(next);
 };

@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
   }
   let payload;
   try {
-    payload = jwt.verify(token, NODE_ENV === 'develop' ? SECRET_KEY : 'PUTIN');
+    payload = jwt.verify(token, NODE_ENV === 'production' ? SECRET_KEY : 'PUTIN');
   } catch (err) {
     throw new UNAUTHORIZED('Неправильно указан логин и/или пароль');
   }

@@ -4,8 +4,8 @@ const {
   getCards,
   createCard,
   deleteCard,
-  likeCard,
-  dislikeCard,
+  addLike,
+  removeLike,
 } = require('../controllers/cards');
 
 router.get('/', getCards);
@@ -28,7 +28,7 @@ router.put(
       cardId: Joi.string().length(24).hex().required(),
     }),
   }),
-  likeCard,
+  addLike,
 );
 router.delete(
   '/:cardId/likes',
@@ -37,7 +37,7 @@ router.delete(
       cardId: Joi.string().length(24).hex().required(),
     }),
   }),
-  dislikeCard,
+  removeLike,
 );
 router.delete(
   '/:cardId',
