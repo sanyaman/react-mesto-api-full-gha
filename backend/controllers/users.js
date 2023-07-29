@@ -19,6 +19,28 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
+// module.exports.createUser = (req, res, next) => {
+//   const {
+//     name, about, avatar, email, password,
+//   } = req.body;
+//   // eslint-disable-next-line no-console
+//   console.log('>>', name, about, avatar, email, password);
+//   bcrypt
+//     .hash(password, 10)
+//     .then((hash) => user.create({
+//       name, about, avatar, email, password: hash,
+//     }))
+//     .then(() => res.status(201).send({
+//       name, about, avatar, email,
+//     }))
+//     .catch(() => { throw new CONFLICT_ERROR('Введенная почта уже используется'); })
+//     .then((newUser) => {
+//       // eslint-disable-next-line no-shadow
+//       const { password, ...result } = newUser.toObject();
+//       res.send({ data: result });
+//     })
+//     .catch(next);
+// };
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
@@ -28,29 +50,13 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => user.create({
       name, about, avatar, email, password: hash,
     }))
-    .then(() => res.status(201).send({
-      name, about, avatar, email,
-    }))
     .catch(() => { throw new CONFLICT_ERROR('Введенная почта уже используется'); })
     .then((newUser) => {
       // eslint-disable-next-line no-shadow
       const { password, ...result } = newUser.toObject();
-      res.send({ data: result });
+      res.send(result);
     })
     .catch(next);
-  // .catch((err) => {
-  //   if (err.name === 'ValidationError') {
-  //     return next(
-  //       new BAD_REQUEST(
-  //         'Переданы некорректные данные при создании пользователя',
-  //       ),
-  //     );
-  //   } if (err.code === 11000) {
-  //     return next(
-  //       new CONFLICT_ERROR(`Пользователь с почтой'${email}' уже существует.`),
-  //     );
-  //   } return next(err);
-  // });
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
@@ -144,12 +150,8 @@ module.exports.setAvatar = (req, res, next) => {
 };
 module.exports.logout = (req, res) => {
   try {
-    res.cleaeCookie('jwt', { httpOnly: true });
-    res.cookie('jwt', '0', {
-      e: Date(0),
-      httpOnly: true,
-    });
-    res.send('Вали!');
+    res.clearCookie('jwt', { httpOnly: true });
+    res.send({ exit: 'Вали!' });
   } catch (err) { throw new Error(err); }
 };
 
@@ -182,6 +184,7 @@ module.exports.login = (req, res, next) => {
             maxAge: 3600000,
             httpOnly: true,
           });
+          res.cookie('jwtChek', 'true', { maxAge: 3600000 });
           res.send({ email: foundUser.email });
         }).catch(() => { throw new UNAUTHORIZED('Ошибка в создании токена'); });
     })

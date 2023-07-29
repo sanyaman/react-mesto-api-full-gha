@@ -33,7 +33,7 @@ app.get('/crash-test', () => {
 
 const limiter = requestLimit({
   windowMs: 15 * 60 * 1000,
-  max: 1000,
+  max: 1000000,
   message:
     'Превышено количество запросов на сервер, попробуйте выполнить запрос позднее',
 });

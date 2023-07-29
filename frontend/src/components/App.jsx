@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { api } from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
-//import * as auth from "../utils/auth";
 import ProtectedRoute from "./ProtectedRoute";
 import Header from "./Header";
 import Main from "./Main";
@@ -15,7 +14,7 @@ import ImagePopup from "./ImagePopup";
 import Register from "./Register";
 import Login from "./Login";
 import InfoToolTip from "./InfoTooltip";
-import { authorize, register, checkToken, logout } from "../utils/auth";
+import { authorize, register, logout } from "../utils/auth";
 
 function App() {
   const navigate = useNavigate();
@@ -36,63 +35,33 @@ function App() {
     about: "Доширак",
   });
 
-  /* useEffect(() => {
-    if (isLoggedIn) {
-      Promise.all([api.getUserData(), api.getInitialCards()])
-        .then(([user, cards]) => {
-          setCurrentUser(user);
-          setCards(cards);
-        })
-        .catch((err) => console.log("Ошибка:", err));
-    }
-  }, [isLoggedIn]);
+  useEffect(
+    () => {
+      let loginStatus = null;
+      try {
+        const cookie = document.cookie.split(";");
+        loginStatus = cookie
+          .find((str) => str.includes("jwtChek"))
+          .replace("jwtChek=", "");
+      } catch (e) {}
+      if (loginStatus) {
+        loadPage();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
-
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      auth
-        .checkToken(token)
-        .then((res) => {
-          setIsLoggedIn(true);
-          setEmail(res.data.email);
-          navigate("/");
-        })
-        .catch((err) => {
-          if (err.status === 400) {
-            console.log("400 — Токен не передан");
-          } else if (err.status === 401) {
-            console.log("401 — Переданный токен некорректен");
-          }
-        });
-    }
-  }, [navigate]);
-*/
-
-  function handleCheckToken() {
-    checkToken()
-      .then((res) => {
-        if (res._id) {
-          setEmail(res.email);
-          Promise.all([api.getUserData(), api.getInitialCards()])
-            .then(([{ name, about, avatar, _id }, cards]) => {
-              //then(([user, cards])
-              setCurrentUser({ name, about, avatar, _id }); //setCurrentUser(user);
-              setCards(cards);
-              setIsLoggedIn(true);
-              navigate("/", { replace: true });
-            })
-            .catch((err) => console.log("Ошибка:", err));
-        }
+  function loadPage() {
+    Promise.all([api.getUserData(), api.getInitialCards()])
+      .then(([{ name, about, avatar, _id, email }, cards]) => {
+        setEmail(email);
+        setCurrentUser({ name, about, avatar, _id });
+        setCards(cards.reverse());
+        setIsLoggedIn(true);
+        navigate("/", { replace: true });
       })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log("400 — Токен не передан");
-        } else if (err.status === 401) {
-          console.log("401 — Переданный токен некорректен");
-        }
-      });
+      .catch((err) => console.log("Ошибка:", err));
   }
 
   function handleEditAvatarClick() {
@@ -112,8 +81,8 @@ function App() {
     api
       .toggleLike(isLiked, card._id)
       .then((newCard) => {
-        setCards(
-          (state) => state.map((c) => (c._id === newCard._id ? newCard : c)) // c.id === card._id
+        setCards((state) =>
+          state.map((c) => (c._id === newCard._id ? newCard : c))
         );
       })
       .catch((err) => console.log("Ошибка:", err));
@@ -174,11 +143,16 @@ function App() {
   }
 
   function handleRegisterSubmit(data) {
-    register(data.email, data.password)
-      .then(() => {
-        setIsInfoToolTipPopupOpen(true);
-        setIsSuccess(true);
-        navigate("/sign-in");
+    register(data.password, data.email)
+      .then((newUser) => {
+        if (newUser.email) {
+          setIsInfoToolTipPopupOpen(true);
+          setIsSuccess(true);
+          navigate("/sign-in");
+        } else if (newUser.message) {
+          setIsInfoToolTipPopupOpen(true);
+          setIsSuccess(false);
+        }
       })
       .catch((err) => {
         if (err.status === 400) {
@@ -191,16 +165,14 @@ function App() {
 
   function handleLoginSubmit(data) {
     authorize(data.email, data.password)
-    .then((data) => {
-      if (data) {
-        handleCheckToken();
-        setIsLoggedIn(true);
-        //setEmail(email);
-        navigate("/");
-      } else {
-        setIsInfoToolTipPopupOpen(false)
-      }
-    })
+      .then((data) => {
+        if (data.email) {
+          loadPage();
+        } else {
+          setIsInfoToolTipPopupOpen(true);
+          setIsSuccess(false);
+        }
+      })
       .catch((err) => {
         if (err.status === 400) {
           console.log("400 - Не передано одно из полей");
@@ -212,29 +184,22 @@ function App() {
       });
   }
 
-  // function handleSignOut() {
-  //   logout()
-  //     .then((answ) => {
-  //       if (answ) {
-  //         setIsLoggedIn(false);
-  //         navigate("/sign-in");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
   function handleSignOut() {
     logout()
-      .then((answ) => {
-        if (answ.bye) {
-          sessionStorage.removeItem('loggedin');
+      .then((res) => {
+        if (res.exit) {
           setIsLoggedIn(false);
-          setCurrentUser({});
-          navigate("/sign-in")
+          setCurrentUser({
+            name: "",
+            about: "",
+          });
+          navigate("/sign-in");
+          document.cookie = "jwtChek=; expires=Mon, 25 Oct 1917 00:00:01 GMT;";
         }
       })
-      .catch(err => { console.log(err) })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function closeAllPopups() {
@@ -245,10 +210,6 @@ function App() {
     setIsInfoToolTipPopupOpen(false);
     setIsSelectedCard({});
   }
-
-  useEffect(() => {
-    /*  handleCheckToken() */
-  }, [navigate]);
 
   return (
     <CurrentUserContext.Provider value={isCurrentUser}>

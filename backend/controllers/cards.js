@@ -18,9 +18,6 @@ module.exports.createCard = async (req, res, next) => {
       createAt,
     })
     // eslint-disable-next-line no-shadow
-    .then((card) => {
-      res.send(card);
-    })
     .then((populateCard) => populateCard.populate('owner'))
     .then((newCard) => {
       if (!newCard) {
@@ -34,7 +31,7 @@ module.exports.createCard = async (req, res, next) => {
 module.exports.getCards = (req, res, next) => {
   card
     .find({})
-    .populate('owner')
+    .populate('owner likes')
     .then((cards) => {
       res.send(cards);
     })
