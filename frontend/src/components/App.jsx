@@ -37,14 +37,7 @@ function App() {
 
   useEffect(
     () => {
-      let loginStatus = null;
-      try {
-        const cookie = document.cookie.split(";");
-        loginStatus = cookie
-          .find((str) => str.includes("jwtChek"))
-          .replace("jwtChek=", "");
-      } catch (e) {}
-      if (loginStatus) {
+      if (localStorage.getItem('login')) {
         loadPage();
       }
     },
@@ -167,6 +160,7 @@ function App() {
     authorize(data.email, data.password)
       .then((data) => {
         if (data.email) {
+	localStorage.setItem('login', true);
           loadPage();
         } else {
           setIsInfoToolTipPopupOpen(true);
@@ -194,6 +188,7 @@ function App() {
             about: "",
           });
           navigate("/sign-in");
+	localStorage.removeItem('login')
           document.cookie = "jwtChek=; expires=Mon, 25 Oct 1917 00:00:01 GMT;";
         }
       })

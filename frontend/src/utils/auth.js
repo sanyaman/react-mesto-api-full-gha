@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://api.domainsanyaman.nomoredomains.xyz';
+export const BASE_URL = 'https://api.domainsanyaman.nomoredomains.xyz';
 
 
 

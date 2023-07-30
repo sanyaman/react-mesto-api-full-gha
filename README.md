@@ -9,7 +9,7 @@
 
 ## Ссылки на проект
 
-IP 51.250.1.251
+IP 158.160.110.26
 
 Frontend https://domainSanyaman.students.nomoredomains.xyz
 

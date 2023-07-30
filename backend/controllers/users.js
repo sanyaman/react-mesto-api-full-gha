@@ -181,10 +181,10 @@ module.exports.login = (req, res, next) => {
             },
           );
           res.cookie('jwt', token, {
-            maxAge: 3600000,
+            maxAge: 3600000 * 24 * 7,
             httpOnly: true,
           });
-          res.cookie('jwtChek', 'true', { maxAge: 3600000 });
+          res.cookie('jwtChek', 'true', { maxAge: 3600000 * 24 * 7});
           res.send({ email: foundUser.email });
         }).catch(() => { throw new UNAUTHORIZED('Ошибка в создании токена'); });
     })
