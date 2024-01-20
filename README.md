@@ -14,3 +14,7 @@ IP 158.160.110.26
 Frontend https://domainSanyaman.students.nomoredomains.xyz
 
 Backend https://api.domainSanyaman.nomoredomains.xyz
+
+
+
+Проект завершен.
